@@ -5,7 +5,7 @@ const other=TOOLS.filter(t=>t.slug!=='zuverdienst-tracker');
 const jsonLd={'@context':'https://schema.org','@graph':[
   {'@type':'WebApplication',name:'Zuverdienst-Tracker Österreich',url:'https://austrian-tools.at/tools/zuverdienst-tracker',applicationCategory:'FinanceApplication',operatingSystem:'All',offers:{'@type':'Offer',price:'0',priceCurrency:'EUR'}},
   {'@type':'FAQPage',mainEntity:[
-    {'@type':'Question',name:'Wie viel darf ich in Österreich dazuverdienen?',acceptedAnswer:{'@type':'Answer',text:'Geringfügigkeitsgrenze ~€ 518/Monat. Steuerfrei: € 730/Jahr. Studierende/Familienbeihilfe: ~€ 15.000/Jahr.'}},
+    {'@type':'Question',name:'Wie viel darf ich in Österreich dazuverdienen?',acceptedAnswer:{'@type':'Answer',text:'Geringfügigkeitsgrenze ~€ 551,10/Monat. Steuerfrei: € 730/Jahr. Studierende/Familienbeihilfe: ~€ 15.000/Jahr.'}},
   ]}
 ]};
 ---
@@ -36,7 +36,7 @@ const jsonLd={'@context':'https://schema.org','@graph':[
         <div class="hint">Geschätztes Jahreseinkommen (Zuverdienst)</div>
         <div style="display:grid;gap:1.5rem;margin-top:1.5rem">
           <div>
-            <div class="lb-h"><span>Geringfügigkeitsgrenze (€ 518/Mo)</span><span class="lb-s" id="sG">-</span></div>
+            <div class="lb-h"><span>Geringfügigkeitsgrenze (€ 551,10/Mo)</span><span class="lb-s" id="sG">-</span></div>
             <div class="lb-tr"><div class="lb-f" id="fG" style="width:0"></div></div>
             <div class="lb-d" id="dG">-</div>
           </div>
@@ -64,7 +64,7 @@ const jsonLd={'@context':'https://schema.org','@graph':[
   <div class="ad" data-ad-slot="incontent_2" style="margin-top:2rem">Anzeige Placeholder</div>
 
   <section class="mt-2xl"><h2>Häufige Fragen</h2><div class="faq">
-    <details><summary>Was ist die Geringfügigkeitsgrenze?</summary><p>2024: ~€ 518,44/Monat. Darunter keine SV-Beiträge (außer Unfallversicherung). Bei Überschreitung: volle SV.</p></details>
+    <details><summary>Was ist die Geringfügigkeitsgrenze?</summary><p>2026: € 551,10/Monat. Darunter keine SV-Beiträge (außer Unfallversicherung). Bei Überschreitung: volle SV.</p></details>
     <details><summary>Wie viel ist steuerfrei?</summary><p>Nebeneinkünfte bis € 730/Jahr sind steuerfrei. Bei Überschreitung wird der gesamte Betrag steuerpflichtig.</p></details>
     <details><summary>Verliere ich die Familienbeihilfe?</summary><p>Über-18-Jährige: Zuverdienstgrenze ~€ 15.000/Jahr. Bei Überschreitung anteilige Rückzahlung.</p></details>
   </div></section>
@@ -89,7 +89,7 @@ function calc(){
   if(isNaN(mi)||mi<0||isNaN(mo)||mo<1){er.textContent='Bitte alle Felder ausfüllen.';er.style.display='block';return}
   er.style.display='none';const ann=mi*mo;
   $('rTot').textContent=f(ann);
-  bar($('fG'),$('sG'),$('dG'),mi,518.44);
+  bar($('fG'),$('sG'),$('dG'),mi,551.10);
   bar($('fS'),$('sS'),$('dS'),ann,730);
   if(stu){$('famBox').style.display='block';bar($('fF'),$('sF'),$('dF'),ann,15000)}else{$('famBox').style.display='none'}
   $('res').style.display='block';
