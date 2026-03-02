@@ -16,15 +16,16 @@ export const TAX_CONFIG = {
     { from: 1000000, to: Infinity, rate: 0.55 },
   ],
   // SV employee share 2026 (WKO Beitragswesen Dienstnehmer 2026)
-  // KV 3.87% + PV 10.25% + ALV 3% + WBF 0.50% + AK 0.50% = 18.07% (full ALV)
-  // ALV reduced for low income: <=2225: 0%, 2225-2427: 1%, 2427-2630: 2%, >2630: 3%
+  // KV 3.87% + PV 10.25% + WBF 0.50% + AK 0.50% = 15.12%
+  // DN-ALV depends on income: <=2225: 0%, 2225-2427: 1%, 2427-2630: 2%, >2630: 2.95%
+  // Full DN SV (incl. max ALV): 15.12% + 2.95% = 18.07%
   svRate: 0.1807,
   svRateNoALV: 0.1512,  // without ALV (KV+PV+WBF+AK)
   alvThresholds: [
     { to: 2225, rate: 0 },
     { to: 2427, rate: 0.01 },
     { to: 2630, rate: 0.02 },
-    { to: Infinity, rate: 0.03 },
+    { to: Infinity, rate: 0.0295 },
   ],
   maxSVBasis: 6930,      // Höchstbeitragsgrundlage monthly 2026 (ÖGK)
   maxSVSonderzahlungen: 13860, // jährlich für Sonderzahlungen
@@ -34,18 +35,20 @@ export const TAX_CONFIG = {
   // Geringfügigkeitsgrenze 2026 (unchanged from 2025 per Budgetbegleitgesetz)
   geringfuegig: 551.10,
   steuerfreiZuverdienst: 730,
-  studentLimit: 15000,
+  // Familienbeihilfe (volljährige Kinder): Zuverdienstgrenze 2026/2027
+  studentLimit: 17212,
   // Transport
   fuelPrice: 1.55,
   avgConsumption: 7,
   maintPerKm: 0.05,
-  klimaticketMonthly: 91.25, // €1095/12
+  // KlimaTicket Ö Classic ab 01.01.2026: € 1.400/Jahr
+  klimaticketMonthly: 116.67, // 1400/12
   workingDays: 21,
   // Rent
   rentShare: 0.30,
   richtwert: {
     wien: 6.67, niederoesterreich: 6.85, oberoesterreich: 7.23,
     salzburg: 9.22, tirol: 8.14, vorarlberg: 10.25,
-    kaernten: 7.81, steiermark: 9.43, burgenland: 6.09,
+    kaernten: 7.81, steiermark: 9.21, burgenland: 6.09,
   } as Record<string, number>,
 };

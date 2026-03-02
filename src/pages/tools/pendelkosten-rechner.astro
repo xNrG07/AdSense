@@ -29,7 +29,7 @@ const jsonLd={'@context':'https://schema.org','@graph':[
     </div>
     <div class="fr">
       <div class="fg"><label for="cons">Verbrauch (L/100km)</label><input type="number" id="cons" min="1" max="30" step="0.1" value="7.0"/></div>
-      <div class="fg"><label for="oeffi">Öffi-Monatsticket (€)</label><input type="number" id="oeffi" min="0" max="500" value="91"/><div class="hint">Klimaticket: ~€ 91/Monat</div></div>
+      <div class="fg"><label for="oeffi">Öffi-Monatsticket (€)</label><input type="number" id="oeffi" min="0" max="500" value="116.67"/><div class="hint">KlimaTicket Ö Classic (ab 01.01.2026): € 1.400/Jahr ≈ € 116,67/Monat</div></div>
     </div>
     <div class="fg"><label for="days">Arbeitstage/Monat</label><input type="number" id="days" min="1" max="31" value="21"/></div>
     <button class="btn btn-p" id="calc">Kosten vergleichen</button>
@@ -63,7 +63,7 @@ const jsonLd={'@context':'https://schema.org','@graph':[
   <section class="mt-2xl"><h2>Häufige Fragen</h2><div class="faq">
     <details><summary>Was kostet Pendeln mit dem Auto pro Monat?</summary><p>Bei 30 km, 7 L/100km, € 1,65/L: ca. € 200–350/Monat (Sprit + Verschleiß, ohne Versicherung/Steuer).</p></details>
     <details><summary>Was ist die Pendlerpauschale?</summary><p>Eine steuerliche Begünstigung: kleines PP ab 20 km, großes PP ab 2 km (wenn Öffis unzumutbar).</p></details>
-    <details><summary>Lohnt sich das Klimaticket?</summary><p>Bei ~€ 91/Monat lohnt es sich ab ca. 15–20 km einfach – besonders wenn man Versicherung, Steuer und Parkkosten einrechnet.</p></details>
+    <details><summary>Lohnt sich das Klimaticket?</summary><p>Das hängt stark von deiner Strecke und den Gesamtkosten des Autos ab. Das KlimaTicket Ö Classic kostet ab 01.01.2026 € 1.400/Jahr (≈ € 116,67/Monat) – für viele Strecken ist das im Vergleich zum Auto trotzdem günstig.</p></details>
   </div></section>
   <section class="mt-2xl"><h2>Weitere Tools</h2><div class="rg">{other.map(t=><a href={t.href} class="rl"><div class="rl-e">{t.emoji}</div><div class="rl-t">{t.title}</div><div class="rl-d">{t.desc}</div></a>)}</div></section>
   <section class="mt-2xl"><h2>Passende Artikel</h2><div class="rg">

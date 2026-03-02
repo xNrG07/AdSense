@@ -5,9 +5,9 @@ const other=TOOLS.filter(t=>t.slug!=='netto-brutto-schaetzer');
 const jsonLd={'@context':'https://schema.org','@graph':[
   {'@type':'WebApplication',name:'Netto-Brutto-Schätzer Österreich 2026',url:'https://austrian-tools.at/tools/netto-brutto-schaetzer',applicationCategory:'FinanceApplication',operatingSystem:'All',offers:{'@type':'Offer',price:'0',priceCurrency:'EUR'}},
   {'@type':'FAQPage',mainEntity:[
-    {'@type':'Question',name:'Wie berechnet sich das Netto vom Brutto in Österreich 2026?',acceptedAnswer:{'@type':'Answer',text:'Vom Brutto werden SV-Beiträge (18,07% DN-Anteil) und progressive Lohnsteuer (0–55%) abgezogen. Österreich hat 14 Gehälter/Jahr. Ab 2026 gilt eine Steuerfreigrenze von € 13.539/Jahr.'}},
+    {'@type':'Question',name:'Wie berechnet sich das Netto vom Brutto in Österreich 2026?',acceptedAnswer:{'@type':'Answer',text:'Vom Brutto werden SV-Beiträge (DN-Anteil) und progressive Lohnsteuer (0–55%) abgezogen. Österreich hat 14 Gehälter/Jahr. Sonderzahlungen werden begünstigt besteuert (0% / 6% / 27% / 35,75%). Ab 2026 ist Einkommen bis € 13.539/Jahr steuerfrei.'}},
     {'@type':'Question',name:'Ist dieser Rechner offiziell?',acceptedAnswer:{'@type':'Answer',text:'Nein, dies ist ein Schätz-Tool. Für offizielle Berechnungen nutze den BMF-Rechner.'}},
-    {'@type':'Question',name:'Warum 14 Gehälter?',acceptedAnswer:{'@type':'Answer',text:'Neben 12 Monatsgehältern gibt es Urlaubsgeld und Weihnachtsgeld, die steuerlich begünstigt mit 6% besteuert werden.'}}
+    {'@type':'Question',name:'Warum 14 Gehälter?',acceptedAnswer:{'@type':'Answer',text:'Neben 12 Monatsgehältern gibt es Urlaubsgeld und Weihnachtsgeld. Diese Sonderzahlungen werden innerhalb des Jahressechstels begünstigt besteuert.'}}
   ]}
 ]};
 ---
@@ -57,10 +57,10 @@ const jsonLd={'@context':'https://schema.org','@graph':[
   <div class="ad" data-ad-slot="incontent_2" style="margin-top:2rem">Anzeige Placeholder</div>
 
   <section class="mt-2xl"><h2>Häufige Fragen</h2><div class="faq">
-    <details><summary>Wie berechnet sich das Netto vom Brutto 2026?</summary><p>Vom Brutto werden zunächst SV-Beiträge abgezogen (Dienstnehmer-Anteil: KV 3,87% + PV 10,25% + ALV bis 3% + WBF 0,5% + AK 0,5%). Vom Rest wird progressive Lohnsteuer berechnet. Ab 2026 ist Einkommen bis € 13.539/Jahr steuerfrei. Der Verkehrsabsetzbetrag (€ 496/Jahr) wird berücksichtigt.</p></details>
+    <details><summary>Wie berechnet sich das Netto vom Brutto 2026?</summary><p>Vom Brutto werden zunächst SV-Beiträge abgezogen (Dienstnehmer-Anteil: KV 3,87% + PV 10,25% + ALV bis 2,95% + WBF 0,5% + AK 0,5%). Vom Rest wird progressive Lohnsteuer berechnet. Ab 2026 ist Einkommen bis € 13.539/Jahr steuerfrei. Der Verkehrsabsetzbetrag (€ 496/Jahr) wird berücksichtigt. Sonderzahlungen (13./14.) werden innerhalb des Jahressechstels begünstigt besteuert.</p></details>
     <details><summary>Was ändert sich 2026?</summary><p>Die Steuerstufen wurden um 1,733% angehoben (Abschaffung kalte Progression). Die Höchstbeitragsgrundlage steigt auf € 6.930/Monat. Die Geringfügigkeitsgrenze bleibt bei € 551,10.</p></details>
     <details><summary>Was ist die Höchstbeitragsgrundlage?</summary><p>Ab 2026: € 6.930/Monat. Darüber fällt keine SV an, aber weiterhin Lohnsteuer.</p></details>
-    <details><summary>Warum 14 Gehälter in Österreich?</summary><p>Neben 12 regulären Gehältern gibt es Urlaubsgeld und Weihnachtsgeld. Diese Sonderzahlungen werden begünstigt mit nur 6% besteuert.</p></details>
+    <details><summary>Warum 14 Gehälter in Österreich?</summary><p>Neben 12 regulären Gehältern gibt es Urlaubsgeld und Weihnachtsgeld. Diese Sonderzahlungen werden – innerhalb des Jahressechstels – begünstigt besteuert (0% / 6% / 27% / 35,75%).</p></details>
     <details><summary>Ist dieser Rechner offiziell?</summary><p>Nein – es ist ein Schätz-Tool. Für verbindliche Zahlen: <a href="https://www.bmf.gv.at/services/berechnungsprogramme.html" target="_blank" rel="noopener">BMF-Brutto-Netto-Rechner</a>.</p></details>
   </div></section>
 
@@ -90,17 +90,22 @@ const BRACKETS = [
 ];
 
 // SV rates 2026 — DN share (WKO)
-// KV 3.87% + PV 10.25% + WBF 0.50% + AK 0.50% = 15.12% base
-// ALV depends on income: <=2225: 0%, 2225-2427: 1%, 2427-2630: 2%, >2630: 3%
-const SV_BASE = 0.1512; // without ALV
+// Regular months: KV 3.87% + PV 10.25% + WBF 0.50% + AK 0.50% = 15.12% (without ALV)
+// Sonderzahlungen: no WBF + AK (WKO) → KV 3.87% + PV 10.25% = 14.12% (without ALV)
+// DN-ALV depends on income: <=2225: 0%, 2225-2427: 1%, 2427-2630: 2%, >2630: 2.95%
+const SV_BASE_REGULAR = 0.1512; // KV+PV+WBF+AK
+const SV_BASE_SPECIAL = 0.1412; // KV+PV (no WBF+AK)
 const MAX_SV_BASIS = 6930;
+const MAX_SV_SONDER = 13860;
 const VERKEHRS_AB = 496; // annual
+const SZ_FREIBETRAG = 620;
+const SZ_FREIGRENZE = 2615;
 
 function getALVRate(monthlyBrutto) {
   if (monthlyBrutto <= 2225) return 0;
   if (monthlyBrutto <= 2427) return 0.01;
   if (monthlyBrutto <= 2630) return 0.02;
-  return 0.03;
+  return 0.0295;
 }
 
 function calcTax(annualIncome) {
@@ -113,38 +118,59 @@ function calcTax(annualIncome) {
 }
 
 function calculate(brutto) {
-  // SV: capped at Höchstbeitragsgrundlage
-  const svBasis = Math.min(brutto, MAX_SV_BASIS);
   const alvRate = getALVRate(brutto);
-  const svRate = SV_BASE + alvRate;
-  const svMonthly = svBasis * svRate;
 
-  // Annual
+  // SV split: 12 regular months + 2 Sonderzahlungen (with special caps and rates)
+  const regularBasis = Math.min(brutto, MAX_SV_BASIS);
+  const svRateRegular = SV_BASE_REGULAR + alvRate;
+  const regularSV = regularBasis * svRateRegular * 12;
+
+  const specialGross = brutto * 2;
+  const specialBasisTotal = Math.min(specialGross, MAX_SV_SONDER);
+  const svRateSpecial = SV_BASE_SPECIAL + alvRate;
+  const specialSV = specialBasisTotal * svRateSpecial;
+
   const annualBrutto = brutto * 14;
+  const annualSV = regularSV + specialSV;
 
-  // Annual SV (regular months and Sonderzahlungen both capped)
-  const annualSV = svMonthly * 14;
+  // Tax base split
+  const regularTaxable = (brutto * 12) - regularSV;
+  const specialTaxable = specialGross - specialSV;
 
-  // Taxable income = brutto - SV
-  const annualTaxable = annualBrutto - annualSV;
-
-  // Tax on 12 regular months
-  const regularTaxable = (annualTaxable / 14) * 12;
+  // Regular tax (tariff)
   const regularTax = calcTax(regularTaxable);
-
-  // Apply Verkehrsabsetzbetrag (reduces tax directly)
   const regularTaxAfterVAB = Math.max(0, regularTax - VERKEHRS_AB);
 
-  // Sonderzahlungen (13th + 14th): flat 6% tax (first €620 exempt per SZ)
-  const szTaxable = (annualTaxable / 14) * 2;
-  const szTax = Math.max(0, (szTaxable - 620) * 0.06);
+  // Sonderzahlungen tax (within Jahressechstel) — simplified but aligned with the fixed-rate table
+  // If Jahressechstel is under the Freigrenze, no tax is withheld on SZ with the fixed rate.
+  const jahressechstel = brutto * 2;
+  let szTax = 0;
+  if (jahressechstel > SZ_FREIGRENZE) {
+    let base = Math.max(0, specialTaxable - SZ_FREIBETRAG);
+    const steps = [
+      { cap: 24380, rate: 0.06 },
+      { cap: 25000, rate: 0.27 },
+      { cap: 33333, rate: 0.3575 },
+    ];
+    for (const s of steps) {
+      if (base <= 0) break;
+      const part = Math.min(base, s.cap);
+      szTax += part * s.rate;
+      base -= part;
+    }
+    // Overhang (rare for standard 13./14.): taxed like regular income
+    if (base > 0) {
+      szTax += (calcTax(regularTaxable + base) - calcTax(regularTaxable));
+    }
+  }
 
   const totalTax = regularTaxAfterVAB + szTax;
-
   const annualNetto = annualBrutto - annualSV - totalTax;
   const monthlyNetto = annualNetto / 14;
 
-  return { brutto, svMonthly, svRate, taxMonthly: totalTax/14, nettoMonthly: monthlyNetto, annualBrutto, annualNetto };
+  const svMonthlyAvg = annualSV / 14;
+  const svRateMax = svRateRegular;
+  return { brutto, svMonthly: svMonthlyAvg, svRate: svRateMax, taxMonthly: totalTax/14, nettoMonthly: monthlyNetto, annualBrutto, annualNetto };
 }
 
 function run() {
