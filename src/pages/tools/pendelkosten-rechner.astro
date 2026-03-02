@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { TOOLS } from '../../data/tools';
+const other=TOOLS.filter(t=>t.slug!=='pendelkosten-rechner');
+const jsonLd={'@context':'https://schema.org','@graph':[
+  {'@type':'WebApplication',name:'Pendelkosten-Rechner Österreich',url:'https://austrian-tools.at/tools/pendelkosten-rechner',applicationCategory:'FinanceApplication',operatingSystem:'All',offers:{'@type':'Offer',price:'0',priceCurrency:'EUR'}},
+  {'@type':'FAQPage',mainEntity:[
+    {'@type':'Question',name:'Wie viel kostet Pendeln mit dem Auto?',acceptedAnswer:{'@type':'Answer',text:'Bei 30 km einfach, 7 L/100km und € 1,65/L: ca. € 200–350/Monat (Sprit + Wartung).'}},
+    {'@type':'Question',name:'Was ist die Pendlerpauschale?',acceptedAnswer:{'@type':'Answer',text:'Eine steuerliche Begünstigung für Arbeitnehmer. Kleines PP ab 20 km, großes PP ab 2 km (wenn Öffis unzumutbar).'}}
+  ]}
+]};
+---
+<BaseLayout title="Pendelkosten-Rechner Österreich — Auto vs. Öffis" description="Vergleiche deine monatlichen Pendelkosten: Auto vs. Öffis. Mit Spritkosten, Wartung und Klimaticket." jsonLd={jsonLd}>
+<section class="section"><div class="container narrow">
+  <nav class="bc"><a href="/">Start</a> / <a href="/tools">Tools</a> / Pendelkosten-Rechner</nav>
+  <h1 class="mt-m">🚗 Pendelkosten-Rechner</h1>
+  <p class="mt-s">Vergleiche Auto vs. Öffis für deinen Arbeitsweg — inklusive Sprit, Wartung und Öffi-Ticket.</p>
+  <div class="disc">⚠️ Schätzwerte. Tatsächliche Kosten variieren je nach Fahrzeug, Route und Ticketpreisen.</div>
+
+  <div class="card mt-l">
+    <div class="presets"><span class="presets-l">Beispiele:</span>
+      <button class="btn btn-s btn-sm" data-p='{"k":25,"f":1.65,"c":7}'>25 km Standard</button>
+      <button class="btn btn-s btn-sm" data-p='{"k":50,"f":1.65,"c":8}'>50 km SUV</button>
+      <button class="btn btn-s btn-sm" data-p='{"k":10,"f":1.65,"c":5}'>10 km Kleinwagen</button>
+    </div>
+    <div class="fr">
+      <div class="fg"><label for="km">Einfache Strecke (km)</label><input type="number" id="km" min="1" max="500" placeholder="z.B. 30"/></div>
+      <div class="fg"><label for="fp">Spritpreis (€/L)</label><input type="number" id="fp" min="0.5" max="5" step="0.01" value="1.65"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label for="cons">Verbrauch (L/100km)</label><input type="number" id="cons" min="1" max="30" step="0.1" value="7.0"/></div>
+      <div class="fg"><label for="oeffi">Öffi-Monatsticket (€)</label><input type="number" id="oeffi" min="0" max="500" value="91"/><div class="hint">Klimaticket: ~€ 91/Monat</div></div>
+    </div>
+    <div class="fg"><label for="days">Arbeitstage/Monat</label><input type="number" id="days" min="1" max="31" value="21"/></div>
+    <button class="btn btn-p" id="calc">Kosten vergleichen</button>
+    <div class="err" id="fErr" style="display:none"></div>
+    <div id="res" style="display:none">
+      <div class="rc">
+        <div class="rc-t">Monatliche Pendelkosten (geschätzt)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1rem">
+          <div><div class="hint">🚗 Auto</div><div class="rc-v" id="rCar" style="font-size:1.5rem">-</div></div>
+          <div><div class="hint">🚆 Öffis</div><div class="rc-v" id="rOef" style="font-size:1.5rem">-</div></div>
+        </div>
+        <div id="sMsg" class="mt-m" style="padding:.5rem 1rem;border-radius:6px;font-weight:600;font-size:.95rem"></div>
+        <div style="margin-top:1rem">
+          <div class="rr"><span class="rr-l">Tägliche Strecke (hin & zurück)</span><span class="rr-v" id="rDK">-</span></div>
+          <div class="rr"><span class="rr-l">Spritkosten/Monat</span><span class="rr-v" id="rFu">-</span></div>
+          <div class="rr"><span class="rr-l">Wartung/Verschleiß</span><span class="rr-v" id="rMa">-</span></div>
+          <div class="rr"><span class="rr-l">Ersparnis/Jahr</span><span class="rr-v" id="rYS">-</span></div>
+        </div>
+      </div>
+      <div class="ra">
+        <button class="btn btn-s btn-sm" id="copy">📋 Kopieren</button>
+        <button class="btn btn-s btn-sm" id="share">🔗 Teilen</button>
+        <button class="btn btn-s btn-sm" id="saveb">💾 Speichern</button>
+      </div>
+      <div id="msg" class="hint mt-s" style="display:none;color:var(--ok)"></div>
+    </div>
+  </div>
+
+  <div class="ad" data-ad-slot="incontent_2" style="margin-top:2rem">Anzeige Placeholder</div>
+
+  <section class="mt-2xl"><h2>Häufige Fragen</h2><div class="faq">
+    <details><summary>Was kostet Pendeln mit dem Auto pro Monat?</summary><p>Bei 30 km, 7 L/100km, € 1,65/L: ca. € 200–350/Monat (Sprit + Verschleiß, ohne Versicherung/Steuer).</p></details>
+    <details><summary>Was ist die Pendlerpauschale?</summary><p>Eine steuerliche Begünstigung: kleines PP ab 20 km, großes PP ab 2 km (wenn Öffis unzumutbar).</p></details>
+    <details><summary>Lohnt sich das Klimaticket?</summary><p>Bei ~€ 91/Monat lohnt es sich ab ca. 15–20 km einfach – besonders wenn man Versicherung, Steuer und Parkkosten einrechnet.</p></details>
+  </div></section>
+  <section class="mt-2xl"><h2>Weitere Tools</h2><div class="rg">{other.map(t=><a href={t.href} class="rl"><div class="rl-e">{t.emoji}</div><div class="rl-t">{t.title}</div><div class="rl-d">{t.desc}</div></a>)}</div></section>
+  <section class="mt-2xl"><h2>Passende Artikel</h2><div class="rg">
+    <a href="/blog/pendelkosten-berechnen" class="rl"><div class="rl-e">📝</div><div class="rl-t">Pendelkosten realistisch berechnen</div></a>
+    <a href="/blog/pendlerpauschale-guide" class="rl"><div class="rl-e">📝</div><div class="rl-t">Pendlerpauschale Guide</div></a>
+  </div></section>
+</div></section>
+</BaseLayout>
+<script is:inline>
+const $=id=>document.getElementById(id),f=v=>new Intl.NumberFormat('de-AT',{style:'currency',currency:'EUR'}).format(v);
+function calc(){
+  const km=parseFloat($('km').value),fp=parseFloat($('fp').value),co=parseFloat($('cons').value),oe=parseFloat($('oeffi').value),dy=parseFloat($('days').value),er=$('fErr');
+  if(isNaN(km)||km<=0||isNaN(fp)||isNaN(co)||isNaN(dy)){er.textContent='Bitte alle Felder ausfüllen.';er.style.display='block';return}
+  er.style.display='none';
+  const dk=km*2,mk=dk*dy,fc=(mk/100)*co*fp,mc=mk*.05,car=fc+mc,diff=car-oe,ys=Math.abs(diff)*12;
+  $('rCar').textContent=f(car);$('rOef').textContent=f(oe);
+  $('rDK').textContent=dk+' km';$('rFu').textContent=f(fc);$('rMa').textContent=f(mc);$('rYS').textContent=f(ys);
+  const m=$('sMsg');
+  if(diff>10){m.textContent='🚆 Öffis ~'+f(diff)+'/Mo günstiger';m.style.background='var(--ok-l)';m.style.color='var(--ok)'}
+  else if(diff<-10){m.textContent='🚗 Auto ~'+f(-diff)+'/Mo günstiger';m.style.background='var(--info-l)';m.style.color='var(--info)'}
+  else{m.textContent='≈ Ähnliche Kosten';m.style.background='var(--warn-l)';m.style.color='var(--warn)'}
+  $('res').style.display='block';
+}
+$('calc').addEventListener('click',calc);
+document.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{const p=JSON.parse(b.dataset.p);$('km').value=p.k;$('fp').value=p.f;$('cons').value=p.c;calc()}));
+function flash(t){const m=$('msg');m.textContent=t;m.style.display='block';setTimeout(()=>m.style.display='none',2000)}
+$('copy')?.addEventListener('click',async()=>{await navigator.clipboard.writeText(`Pendelkosten (AT): Auto ${$('rCar').textContent} vs Öffis ${$('rOef').textContent}\naustrian-tools.at`);flash('✓ Kopiert!')});
+$('share')?.addEventListener('click',()=>{const u=new URL(location.href);u.search='';u.searchParams.set('km',$('km').value);u.searchParams.set('fp',$('fp').value);u.searchParams.set('c',$('cons').value);navigator.clipboard.writeText(u.toString());flash('✓ Link kopiert!')});
+$('saveb')?.addEventListener('click',()=>{try{const k='at_pk',x=JSON.parse(localStorage.getItem(k)||'[]');x.unshift({km:$('km').value,car:$('rCar').textContent,oeffi:$('rOef').textContent,t:new Date().toISOString()});localStorage.setItem(k,JSON.stringify(x.slice(0,10)));flash('✓ Gespeichert!')}catch{}});
+const ps=new URLSearchParams(location.search);if(ps.get('km')){$('km').value=ps.get('km');if(ps.get('fp'))$('fp').value=ps.get('fp');if(ps.get('c'))$('cons').value=ps.get('c');calc()}
+</script>

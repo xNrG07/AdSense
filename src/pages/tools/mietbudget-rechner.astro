@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { TOOLS } from '../../data/tools';
+const other=TOOLS.filter(t=>t.slug!=='mietbudget-rechner');
+const jsonLd={'@context':'https://schema.org','@graph':[
+  {'@type':'WebApplication',name:'Mietbudget-Rechner Österreich',url:'https://austrian-tools.at/tools/mietbudget-rechner',applicationCategory:'FinanceApplication',operatingSystem:'All',offers:{'@type':'Offer',price:'0',priceCurrency:'EUR'}},
+  {'@type':'FAQPage',mainEntity:[
+    {'@type':'Question',name:'Wie viel Miete kann ich mir leisten?',acceptedAnswer:{'@type':'Answer',text:'Faustregel: maximal 30% des Netto-Einkommens für Miete inkl. Betriebskosten.'}},
+    {'@type':'Question',name:'Was ist der Richtwertmietzins?',acceptedAnswer:{'@type':'Answer',text:'Ein gesetzlich festgelegter Preis pro m² für Altbauwohnungen, der je nach Bundesland variiert.'}}
+  ]}
+]};
+const rw=[['Wien','wien'],['Niederösterreich','niederoesterreich'],['Oberösterreich','oberoesterreich'],['Salzburg','salzburg'],['Tirol','tirol'],['Vorarlberg','vorarlberg'],['Kärnten','kaernten'],['Steiermark','steiermark'],['Burgenland','burgenland']];
+const rwVals={wien:6.67,niederoesterreich:6.85,oberoesterreich:7.23,salzburg:9.22,tirol:8.14,vorarlberg:10.25,kaernten:7.81,steiermark:9.43,burgenland:6.09} as Record<string,number>;
+---
+<BaseLayout title="Mietbudget-Rechner Österreich — Leistbare Miete berechnen" description="Finde heraus, wie viel Miete du dir leisten kannst. Vergleiche mit Richtwertmieten in deinem Bundesland." jsonLd={jsonLd}>
+<section class="section"><div class="container narrow">
+  <nav class="bc"><a href="/">Start</a> / <a href="/tools">Tools</a> / Mietbudget-Rechner</nav>
+  <h1 class="mt-m">🏠 Mietbudget-Rechner</h1>
+  <p class="mt-s">Berechne dein empfohlenes Mietbudget und vergleiche mit Richtwertmieten in deinem Bundesland.</p>
+  <div class="disc">⚠️ Richtwerte sind Schätzungen. Tatsächliche Mieten können stark abweichen.</div>
+
+  <div class="card mt-l">
+    <div class="presets"><span class="presets-l">Beispiele:</span>
+      <button class="btn btn-s btn-sm" data-p='{"n":2000,"b":"wien","m2":55}'>€ 2.000 Wien 55m²</button>
+      <button class="btn btn-s btn-sm" data-p='{"n":2500,"b":"steiermark","m2":70}'>€ 2.500 Stmk 70m²</button>
+      <button class="btn btn-s btn-sm" data-p='{"n":1800,"b":"oberoesterreich","m2":50}'>€ 1.800 OÖ 50m²</button>
+    </div>
+    <div class="fr">
+      <div class="fg"><label for="netto">Monatl. Netto-Einkommen (€)</label><input type="number" id="netto" min="0" max="50000" step="50" placeholder="z.B. 2000"/></div>
+      <div class="fg"><label for="bl">Bundesland</label>
+        <select id="bl">{rw.map(([l,v])=><option value={v}>{l}</option>)}</select>
+      </div>
+    </div>
+    <div class="fg"><label for="m2">Gewünschte Wohnungsgröße (m²)</label><input type="number" id="m2" min="10" max="300" step="5" placeholder="z.B. 60"/></div>
+    <button class="btn btn-p" id="calc">Budget berechnen</button>
+    <div class="err" id="fErr" style="display:none"></div>
+    <div id="res" style="display:none">
+      <div class="rc">
+        <div class="rc-t">Dein Mietbudget (geschätzt)</div>
+        <div class="rc-v" id="rBud">-</div>
+        <div class="hint">Empfohlene Maximalmiete (30%-Regel, inkl. BK)</div>
+        <div style="margin-top:1rem">
+          <div class="rr"><span class="rr-l">Netto-Einkommen</span><span class="rr-v" id="rN">-</span></div>
+          <div class="rr"><span class="rr-l">30%-Budget</span><span class="rr-v" id="r30">-</span></div>
+          <div class="rr"><span class="rr-l">Richtwertmiete/m² (Schätzung)</span><span class="rr-v" id="rRW">-</span></div>
+          <div class="rr"><span class="rr-l">Geschätzte Richtwertmiete für Größe</span><span class="rr-v" id="rRM">-</span></div>
+          <div class="rr"><span class="rr-l">+ ~20% Betriebskosten</span><span class="rr-v" id="rBK">-</span></div>
+          <div class="rr"><span class="rr-l">Gesamtmiete (Richtwert + BK)</span><span class="rr-v" id="rGM">-</span></div>
+        </div>
+        <div id="sMsg" class="mt-m" style="padding:.5rem 1rem;border-radius:6px;font-weight:600;font-size:.95rem"></div>
+      </div>
+      <div class="ra">
+        <button class="btn btn-s btn-sm" id="copy">📋 Kopieren</button>
+        <button class="btn btn-s btn-sm" id="share">🔗 Teilen</button>
+        <button class="btn btn-s btn-sm" id="saveb">💾 Speichern</button>
+      </div>
+      <div id="msg" class="hint mt-s" style="display:none;color:var(--ok)"></div>
+    </div>
+  </div>
+
+  <div class="ad" data-ad-slot="incontent_2" style="margin-top:2rem">Anzeige Placeholder</div>
+
+  <section class="mt-2xl"><h2>Häufige Fragen</h2><div class="faq">
+    <details><summary>Wie viel Miete kann ich mir leisten?</summary><p>Faustregel: maximal 30% des Netto-Einkommens für Miete inkl. Betriebskosten. Manche Experten empfehlen sogar nur 25%.</p></details>
+    <details><summary>Was ist der Richtwertmietzins?</summary><p>Ein gesetzlich festgelegter Basispreis pro m² für Altbauwohnungen (Baujahr vor 1945), der je nach Bundesland variiert. Zu- und Abschläge je nach Ausstattung sind möglich.</p></details>
+    <details><summary>Was zählt alles zu den Betriebskosten?</summary><p>Wasser, Müllabfuhr, Kanalgebühr, Versicherungen, Verwaltung, allgemeine Teile etc. Heizung und Strom sind meist extra.</p></details>
+  </div></section>
+  <section class="mt-2xl"><h2>Weitere Tools</h2><div class="rg">{other.map(t=><a href={t.href} class="rl"><div class="rl-e">{t.emoji}</div><div class="rl-t">{t.title}</div><div class="rl-d">{t.desc}</div></a>)}</div></section>
+  <section class="mt-2xl"><h2>Passende Artikel</h2><div class="rg">
+    <a href="/blog/erste-wohnung-kosten" class="rl"><div class="rl-e">📝</div><div class="rl-t">Erste Wohnung: Kosten</div></a>
+    <a href="/blog/monatliches-budget" class="rl"><div class="rl-e">📝</div><div class="rl-t">Monatliches Budget</div></a>
+  </div></section>
+</div></section>
+</BaseLayout>
+<script is:inline define:vars={{rwVals}}>
+const $=id=>document.getElementById(id),fmt=v=>new Intl.NumberFormat('de-AT',{style:'currency',currency:'EUR'}).format(v);
+function calc(){
+  const n=parseFloat($('netto').value),bl=$('bl').value,m2=parseFloat($('m2').value),er=$('fErr');
+  if(isNaN(n)||n<=0||isNaN(m2)||m2<=0){er.textContent='Bitte alle Felder ausfüllen.';er.style.display='block';return}
+  er.style.display='none';
+  const budget=n*.3,rw=rwVals[bl]||7,rm=rw*m2,bk=rm*.2,gm=rm+bk;
+  $('rBud').textContent=fmt(budget);$('rN').textContent=fmt(n);$('r30').textContent=fmt(budget);
+  $('rRW').textContent='€ '+rw.toFixed(2)+'/m²';$('rRM').textContent=fmt(rm);$('rBK').textContent=fmt(bk);$('rGM').textContent=fmt(gm);
+  const m=$('sMsg');
+  if(gm<=budget){m.textContent='✓ Die geschätzte Richtwertmiete liegt in deinem Budget';m.style.background='var(--ok-l)';m.style.color='var(--ok)'}
+  else{m.textContent='⚠️ Die geschätzte Miete übersteigt dein 30%-Budget um '+fmt(gm-budget);m.style.background='var(--accent-l)';m.style.color='var(--accent)'}
+  $('res').style.display='block';
+}
+$('calc').addEventListener('click',calc);
+document.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{const p=JSON.parse(b.dataset.p);$('netto').value=p.n;$('bl').value=p.b;$('m2').value=p.m2;calc()}));
+function flash(t){const m=$('msg');m.textContent=t;m.style.display='block';setTimeout(()=>m.style.display='none',2000)}
+$('copy')?.addEventListener('click',async()=>{await navigator.clipboard.writeText('Mietbudget (AT): '+$('rBud').textContent+'/Mo\naustrian-tools.at');flash('✓ Kopiert!')});
+$('share')?.addEventListener('click',()=>{const u=new URL(location.href);u.search='';u.searchParams.set('n',$('netto').value);u.searchParams.set('bl',$('bl').value);u.searchParams.set('m2',$('m2').value);navigator.clipboard.writeText(u.toString());flash('✓ Link kopiert!')});
+$('saveb')?.addEventListener('click',()=>{try{const k='at_mb',x=JSON.parse(localStorage.getItem(k)||'[]');x.unshift({netto:$('netto').value,bud:$('rBud').textContent,t:new Date().toISOString()});localStorage.setItem(k,JSON.stringify(x.slice(0,10)));flash('✓ Gespeichert!')}catch{}});
+const ps=new URLSearchParams(location.search);if(ps.get('n')){$('netto').value=ps.get('n');if(ps.get('bl'))$('bl').value=ps.get('bl');if(ps.get('m2'))$('m2').value=ps.get('m2');calc()}
+</script>

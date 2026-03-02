@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Sitemap: https://austrian-tools.at/sitemap-index.xml
+Disallow: /impressum
+Disallow: /datenschutz

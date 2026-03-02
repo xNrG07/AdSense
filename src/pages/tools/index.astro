@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { TOOLS } from '../../data/tools';
+---
+<BaseLayout title="Alle Tools — Kostenlose Finanz-Rechner" description="Übersicht aller kostenlosen Finanz-Tools für Österreich: Netto-Brutto, Pendelkosten, Zuverdienst, Mietbudget.">
+<section class="section"><div class="container">
+  <h1>Alle Tools</h1>
+  <p style="color:var(--text2);max-width:600px" class="mt-s">Kostenlose Finanz-Tools speziell für Österreich. Alle Berechnungen laufen lokal im Browser.</p>
+  <div class="rg mt-xl">
+    {TOOLS.map(t=>
+      <a href={t.href} class="card" style="display:block;text-decoration:none">
+        <span style="font-size:2rem;display:block;margin-bottom:.5rem">{t.emoji}</span>
+        <h3 style="color:var(--text)">{t.title}</h3>
+        <p style="font-size:.9rem;color:var(--text2)">{t.long}</p>
+        <span style="font-size:.85rem;font-weight:600;color:var(--accent)">Tool öffnen →</span>
+      </a>
+    )}
+  </div>
+</div></section>
+</BaseLayout>

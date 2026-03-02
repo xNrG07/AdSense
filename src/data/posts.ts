@@ -1,0 +1,18 @@
+export const POSTS = [
+  { slug:'netto-vs-brutto', title:'Netto vs. Brutto in Österreich: was beeinflusst den Unterschied?', tool:'netto-brutto-schaetzer', related:'monatliches-budget',
+    desc:'Was genau wird vom Brutto abgezogen und warum unterscheidet sich das Netto so stark?' },
+  { slug:'pendelkosten-berechnen', title:'Pendelkosten realistisch berechnen: Auto vs. Öffis', tool:'pendelkosten-rechner', related:'pendlerpauschale-guide',
+    desc:'Ein ehrlicher Vergleich der tatsächlichen Kosten von Auto und öffentlichen Verkehrsmitteln.' },
+  { slug:'monatliches-budget', title:'Monatliches Budget: so verlierst du keine Übersicht', tool:'mietbudget-rechner', related:'spartipps-alltag',
+    desc:'Praktische Tipps für eine einfache monatliche Budgetplanung.' },
+  { slug:'zuverdienst-planen', title:'Zuverdienst: wie du dein Einkommen planst', tool:'zuverdienst-tracker', related:'netto-vs-brutto',
+    desc:'So behältst du den Überblick über Nebeneinkommen und relevante Grenzen.' },
+  { slug:'pendlerpauschale-guide', title:'Pendlerpauschale in Österreich: wer bekommt wie viel?', tool:'pendelkosten-rechner', related:'pendelkosten-berechnen',
+    desc:'Alles Wissenswerte rund um die Pendlerpauschale – einfach erklärt.' },
+  { slug:'spartipps-alltag', title:'10 einfache Spartipps für den Alltag in Österreich', tool:'mietbudget-rechner', related:'monatliches-budget',
+    desc:'Kleine Änderungen mit großer Wirkung für dein monatliches Budget.' },
+  { slug:'steuererklarung-basics', title:'Steuererklärung in Österreich: die Basics für Einsteiger', tool:'netto-brutto-schaetzer', related:'zuverdienst-planen',
+    desc:'Was du als Arbeitnehmer über die Arbeitnehmerveranlagung wissen solltest.' },
+  { slug:'erste-wohnung-kosten', title:'Erste eigene Wohnung: mit welchen Kosten du rechnen musst', tool:'mietbudget-rechner', related:'monatliches-budget',
+    desc:'Miete, Kaution, Betriebskosten – ein Überblick für den Einzug.' },
+];

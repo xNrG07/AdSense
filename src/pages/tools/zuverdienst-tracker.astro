@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { TOOLS } from '../../data/tools';
+const other=TOOLS.filter(t=>t.slug!=='zuverdienst-tracker');
+const jsonLd={'@context':'https://schema.org','@graph':[
+  {'@type':'WebApplication',name:'Zuverdienst-Tracker Österreich',url:'https://austrian-tools.at/tools/zuverdienst-tracker',applicationCategory:'FinanceApplication',operatingSystem:'All',offers:{'@type':'Offer',price:'0',priceCurrency:'EUR'}},
+  {'@type':'FAQPage',mainEntity:[
+    {'@type':'Question',name:'Wie viel darf ich in Österreich dazuverdienen?',acceptedAnswer:{'@type':'Answer',text:'Geringfügigkeitsgrenze ~€ 518/Monat. Steuerfrei: € 730/Jahr. Studierende/Familienbeihilfe: ~€ 15.000/Jahr.'}},
+  ]}
+]};
+---
+<BaseLayout title="Zuverdienst-Tracker Österreich — Zusatzeinkommen im Blick" description="Tracke dein Zusatzeinkommen: Geringfügigkeitsgrenze, Steuerfreibetrag und Familienbeihilfe-Grenze." jsonLd={jsonLd}>
+<section class="section"><div class="container narrow">
+  <nav class="bc"><a href="/">Start</a> / <a href="/tools">Tools</a> / Zuverdienst-Tracker</nav>
+  <h1 class="mt-m">📊 Zuverdienst-Tracker</h1>
+  <p class="mt-s">Behalte den Überblick über dein Zusatzeinkommen und relevante Grenzen.</p>
+  <div class="disc">⚠️ Keine Rechts-/Steuerberatung. Grenzen sind Schätzwerte – bitte Steuerberater konsultieren.</div>
+
+  <div class="card mt-l">
+    <div class="presets"><span class="presets-l">Situationen:</span>
+      <button class="btn btn-s btn-sm" data-p='{"m":400,"n":6,"s":false}'>Nebenjob 6 Mo</button>
+      <button class="btn btn-s btn-sm" data-p='{"m":500,"n":12,"s":true}'>Student ganzjährig</button>
+      <button class="btn btn-s btn-sm" data-p='{"m":300,"n":3,"s":false}'>Ferialjob 3 Mo</button>
+    </div>
+    <div class="fr">
+      <div class="fg"><label for="mi">Monatliches Zusatzeinkommen (€)</label><input type="number" id="mi" min="0" max="10000" step="10" placeholder="z.B. 450"/></div>
+      <div class="fg"><label for="mo">Anzahl Monate</label><input type="number" id="mo" min="1" max="12" value="12"/></div>
+    </div>
+    <div class="fg"><label><input type="checkbox" id="stu" style="width:auto;margin-right:.4rem"/>Ich beziehe Familienbeihilfe / bin Studierende*r</label></div>
+    <button class="btn btn-p" id="calc">Prüfen</button>
+    <div class="err" id="fErr" style="display:none"></div>
+    <div id="res" style="display:none">
+      <div class="rc">
+        <div class="rc-t">Dein Zuverdienst-Status</div>
+        <div class="rc-v" id="rTot" style="font-size:1.8rem">-</div>
+        <div class="hint">Geschätztes Jahreseinkommen (Zuverdienst)</div>
+        <div style="display:grid;gap:1.5rem;margin-top:1.5rem">
+          <div>
+            <div class="lb-h"><span>Geringfügigkeitsgrenze (€ 518/Mo)</span><span class="lb-s" id="sG">-</span></div>
+            <div class="lb-tr"><div class="lb-f" id="fG" style="width:0"></div></div>
+            <div class="lb-d" id="dG">-</div>
+          </div>
+          <div>
+            <div class="lb-h"><span>Steuerfrei (€ 730/Jahr)</span><span class="lb-s" id="sS">-</span></div>
+            <div class="lb-tr"><div class="lb-f" id="fS" style="width:0"></div></div>
+            <div class="lb-d" id="dS">-</div>
+          </div>
+          <div id="famBox" style="display:none">
+            <div class="lb-h"><span>Familienbeihilfe (€ 15.000/Jahr)</span><span class="lb-s" id="sF">-</span></div>
+            <div class="lb-tr"><div class="lb-f" id="fF" style="width:0"></div></div>
+            <div class="lb-d" id="dF">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="ra">
+        <button class="btn btn-s btn-sm" id="copy">📋 Kopieren</button>
+        <button class="btn btn-s btn-sm" id="share">🔗 Teilen</button>
+        <button class="btn btn-s btn-sm" id="saveb">💾 Speichern</button>
+      </div>
+      <div id="msg" class="hint mt-s" style="display:none;color:var(--ok)"></div>
+    </div>
+  </div>
+
+  <div class="ad" data-ad-slot="incontent_2" style="margin-top:2rem">Anzeige Placeholder</div>
+
+  <section class="mt-2xl"><h2>Häufige Fragen</h2><div class="faq">
+    <details><summary>Was ist die Geringfügigkeitsgrenze?</summary><p>2024: ~€ 518,44/Monat. Darunter keine SV-Beiträge (außer Unfallversicherung). Bei Überschreitung: volle SV.</p></details>
+    <details><summary>Wie viel ist steuerfrei?</summary><p>Nebeneinkünfte bis € 730/Jahr sind steuerfrei. Bei Überschreitung wird der gesamte Betrag steuerpflichtig.</p></details>
+    <details><summary>Verliere ich die Familienbeihilfe?</summary><p>Über-18-Jährige: Zuverdienstgrenze ~€ 15.000/Jahr. Bei Überschreitung anteilige Rückzahlung.</p></details>
+  </div></section>
+  <section class="mt-2xl"><h2>Weitere Tools</h2><div class="rg">{other.map(t=><a href={t.href} class="rl"><div class="rl-e">{t.emoji}</div><div class="rl-t">{t.title}</div><div class="rl-d">{t.desc}</div></a>)}</div></section>
+  <section class="mt-2xl"><h2>Passende Artikel</h2><div class="rg">
+    <a href="/blog/zuverdienst-planen" class="rl"><div class="rl-e">📝</div><div class="rl-t">Zuverdienst richtig planen</div></a>
+    <a href="/blog/netto-vs-brutto" class="rl"><div class="rl-e">📝</div><div class="rl-t">Netto vs. Brutto</div></a>
+  </div></section>
+</div></section>
+</BaseLayout>
+<script is:inline>
+const $=id=>document.getElementById(id),f=v=>new Intl.NumberFormat('de-AT',{style:'currency',currency:'EUR'}).format(v);
+function bar(pf,ps,pd,cur,lim){
+  const pct=Math.min(cur/lim*100,100);pf.style.width=pct+'%';pf.classList.remove('over','warn');
+  if(cur>lim){pf.classList.add('over');ps.textContent='⚠️ Überschritten';ps.style.background='var(--accent-l)';ps.style.color='var(--accent)'}
+  else if(pct>80){pf.classList.add('warn');ps.textContent='⚡ Knapp';ps.style.background='var(--warn-l)';ps.style.color='var(--warn)'}
+  else{ps.textContent='✓ OK';ps.style.background='var(--ok-l)';ps.style.color='var(--ok)'}
+  pd.textContent=f(cur)+' von '+f(lim)+' ('+pct.toFixed(0)+'%)';
+}
+function calc(){
+  const mi=parseFloat($('mi').value),mo=parseFloat($('mo').value),stu=$('stu').checked,er=$('fErr');
+  if(isNaN(mi)||mi<0||isNaN(mo)||mo<1){er.textContent='Bitte alle Felder ausfüllen.';er.style.display='block';return}
+  er.style.display='none';const ann=mi*mo;
+  $('rTot').textContent=f(ann);
+  bar($('fG'),$('sG'),$('dG'),mi,518.44);
+  bar($('fS'),$('sS'),$('dS'),ann,730);
+  if(stu){$('famBox').style.display='block';bar($('fF'),$('sF'),$('dF'),ann,15000)}else{$('famBox').style.display='none'}
+  $('res').style.display='block';
+}
+$('calc').addEventListener('click',calc);
+document.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{const p=JSON.parse(b.dataset.p);$('mi').value=p.m;$('mo').value=p.n;$('stu').checked=p.s;calc()}));
+function flash(t){const m=$('msg');m.textContent=t;m.style.display='block';setTimeout(()=>m.style.display='none',2000)}
+$('copy')?.addEventListener('click',async()=>{await navigator.clipboard.writeText('Zuverdienst (AT): '+$('rTot').textContent+'/Jahr\naustrian-tools.at');flash('✓ Kopiert!')});
+$('share')?.addEventListener('click',()=>{const u=new URL(location.href);u.search='';u.searchParams.set('m',$('mi').value);u.searchParams.set('n',$('mo').value);navigator.clipboard.writeText(u.toString());flash('✓ Link kopiert!')});
+$('saveb')?.addEventListener('click',()=>{try{const k='at_zv',x=JSON.parse(localStorage.getItem(k)||'[]');x.unshift({m:$('mi').value,n:$('mo').value,t:new Date().toISOString()});localStorage.setItem(k,JSON.stringify(x.slice(0,10)));flash('✓ Gespeichert!')}catch{}});
+const ps=new URLSearchParams(location.search);if(ps.get('m')){$('mi').value=ps.get('m');if(ps.get('n'))$('mo').value=ps.get('n');calc()}
+</script>

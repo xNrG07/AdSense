@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Kontakt" description="Kontaktiere das Team von Austrian Tools.">
+<section class="section"><div class="container narrow">
+<h1>Kontakt</h1>
+<p class="mt-s" style="color:var(--text2)">Fragen, Feedback oder Vorschläge? Schreib uns!</p>
+<form class="card mt-l" id="cf" action="mailto:kontakt@austrian-tools.at" method="POST" enctype="text/plain">
+  <div class="fg"><label for="cName">Name</label><input type="text" id="cName" name="name" required placeholder="Dein Name"/></div>
+  <div class="fg"><label for="cEmail">E-Mail</label><input type="email" id="cEmail" name="email" required placeholder="deine@email.at"/></div>
+  <div class="fg"><label for="cMsg">Nachricht</label><textarea id="cMsg" name="message" rows="5" required placeholder="Deine Nachricht..." style="resize:vertical"></textarea></div>
+  <button type="submit" class="btn btn-p">Nachricht senden</button>
+  <p class="hint mt-s">Öffnet dein E-Mail-Programm (mailto-Fallback). Alternativ direkt an: kontakt@austrian-tools.at</p>
+</form>
+</div></section>
+</BaseLayout>

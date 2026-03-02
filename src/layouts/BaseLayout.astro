@@ -1,0 +1,57 @@
+---
+import '../styles/global.css';
+import { TOOLS } from '../data/tools';
+interface Props { title:string; description:string; canonical?:string; jsonLd?:object; noIndex?:boolean }
+const { title, description, canonical, jsonLd, noIndex=false } = Astro.props;
+const p = Astro.url.pathname;
+const site = 'https://austrian-tools.at';
+const can = canonical || `${site}${p}`;
+const nav = [{href:'/',l:'Start'},{href:'/tools',l:'Tools'},{href:'/blog',l:'Blog'},{href:'/kontakt',l:'Kontakt'}];
+---
+<!DOCTYPE html>
+<html lang="de-AT">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>{title} | Austrian Tools</title>
+<meta name="description" content={description}/>
+<link rel="canonical" href={can}/>
+{noIndex && <meta name="robots" content="noindex,nofollow"/>}
+<meta property="og:title" content={title}/><meta property="og:description" content={description}/>
+<meta property="og:url" content={can}/><meta property="og:type" content="website"/><meta property="og:locale" content="de_AT"/>
+<meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content={title}/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇦🇹</text></svg>"/>
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}/>}
+</head>
+<body>
+<a href="#main" class="sr-only">Zum Inhalt springen</a>
+<header class="sh"><div class="container sh-i">
+  <a href="/" class="logo">🇦🇹 Austrian<strong>Tools</strong></a>
+  <button class="mt" id="mt" aria-label="Menü"><span/><span/><span/></button>
+  <nav class="nav" id="nav">
+    {nav.map(n=><a href={n.href} class:list={[{active:p===n.href||(n.href!=='/'&&p.startsWith(n.href))}]}>{n.l}</a>)}
+  </nav>
+</div></header>
+<div class="container"><div class="ad ad-h" data-ad-slot="header_leaderboard">Anzeige (728×90 Placeholder)</div></div>
+<main id="main"><slot/></main>
+<footer class="sf"><div class="container sf-i">
+  <div>🇦🇹 Austrian<strong style="color:var(--accent)">Tools</strong><p style="font-size:.85rem;color:var(--muted);margin-top:.5rem">Kostenlose Finanz-Tools für Österreich</p></div>
+  <div class="sf-l">
+    <div class="sf-c"><strong>Tools</strong>{TOOLS.map(t=><a href={t.href}>{t.title}</a>)}</div>
+    <div class="sf-c"><strong>Info</strong><a href="/blog">Blog</a><a href="/kontakt">Kontakt</a><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a></div>
+  </div>
+  <div class="sf-d"><p>Alle Berechnungen sind Schätzungen und ersetzen keine professionelle Steuer-, Rechts- oder Finanzberatung.</p><p>© {new Date().getFullYear()} Austrian Tools</p></div>
+</div></footer>
+<div class="cb" id="cb" style="display:none"><div class="cb-i">
+  <div class="cb-t"><strong>🍪 Datenschutz</strong><br/>Wir verwenden Cookies für die Funktionalität. Analyse- und Werbe-Cookies nur mit Zustimmung. <a href="/datenschutz">Mehr</a></div>
+  <div class="cb-a"><button class="btn btn-s btn-sm" id="cFn">Nur notwendige</button><button class="btn btn-p btn-sm" id="cAll">Alle akzeptieren</button></div>
+</div></div>
+<script is:inline>
+const mt=document.getElementById('mt'),nv=document.getElementById('nav');
+mt?.addEventListener('click',()=>nv?.classList.toggle('open'));
+const CK='at_consent',cb=document.getElementById('cb');
+if(!localStorage.getItem(CK)&&cb)cb.style.display='block';
+document.getElementById('cAll')?.addEventListener('click',()=>{localStorage.setItem(CK,JSON.stringify({f:1,a:1,ad:1,t:Date.now()}));cb&&(cb.style.display='none')});
+document.getElementById('cFn')?.addEventListener('click',()=>{localStorage.setItem(CK,JSON.stringify({f:1,a:0,ad:0,t:Date.now()}));cb&&(cb.style.display='none')});
+</script>
+</body>
+</html>

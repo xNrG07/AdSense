@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { TOOLS } from '../data/tools';
+const jsonLd={
+  '@context':'https://schema.org','@type':'WebSite',
+  name:'Austrian Tools',url:'https://austrian-tools.at',
+  description:'Kostenlose Finanz-Tools und Rechner für Österreich.'
+};
+---
+<BaseLayout title="Kostenlose Finanz-Tools für Österreich" description="Netto-Brutto-Schätzer, Pendelkosten-Rechner, Zuverdienst-Tracker und mehr – kostenlos für Österreich." jsonLd={jsonLd}>
+<section class="hero"><div class="container tc">
+  <span class="tag">Kostenlos & ohne Anmeldung</span>
+  <h1 class="mt-s">Finanz-Tools für deinen Alltag in Österreich</h1>
+  <p style="color:var(--text2);max-width:600px;margin:1rem auto 0">Gehalt berechnen, Pendelkosten vergleichen, Zuverdienst tracken — schnell, privat und auf österreichische Regelungen abgestimmt.</p>
+</div></section>
+<section class="section"><div class="container">
+  <div class="rg">
+    {TOOLS.map(t=>
+      <a href={t.href} class="card" style="display:block;text-decoration:none;transition:all .2s">
+        <span style="font-size:2rem;display:block;margin-bottom:.5rem">{t.emoji}</span>
+        <h3 style="color:var(--text)">{t.title}</h3>
+        <p style="font-size:.9rem;color:var(--text2)">{t.desc}</p>
+        <span style="font-size:.85rem;font-weight:600;color:var(--accent)">Tool öffnen →</span>
+      </a>
+    )}
+  </div>
+</div></section>
+<section class="section"><div class="container narrow">
+  <h2>Warum Austrian Tools?</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem">
+    <div><strong>🇦🇹 Österreich-spezifisch</strong><p style="font-size:.9rem;color:var(--text2);margin-top:.25rem">Basierend auf österreichischen Richtwerten und Steuersätzen.</p></div>
+    <div><strong>🔒 100% Privat</strong><p style="font-size:.9rem;color:var(--text2);margin-top:.25rem">Alles läuft lokal in deinem Browser – keine Daten an Server.</p></div>
+    <div><strong>⚡ Sofortige Ergebnisse</strong><p style="font-size:.9rem;color:var(--text2);margin-top:.25rem">Keine Ladezeiten, keine Anmeldung nötig.</p></div>
+    <div><strong>📱 Überall verfügbar</strong><p style="font-size:.9rem;color:var(--text2);margin-top:.25rem">Optimiert für Smartphone, Tablet und Desktop.</p></div>
+  </div>
+</div></section>
+<section class="section"><div class="container narrow">
+  <h2>Aus dem Blog</h2>
+  <div class="rg mt-l">
+    <a href="/blog/netto-vs-brutto" class="rl"><div class="rl-e">📝</div><div class="rl-t">Netto vs. Brutto in Österreich</div><div class="rl-d">Was beeinflusst den Unterschied?</div></a>
+    <a href="/blog/pendelkosten-berechnen" class="rl"><div class="rl-e">📝</div><div class="rl-t">Pendelkosten berechnen</div><div class="rl-d">Auto vs. Öffis ehrlich verglichen.</div></a>
+    <a href="/blog/monatliches-budget" class="rl"><div class="rl-e">📝</div><div class="rl-t">Monatliches Budget</div><div class="rl-d">So verlierst du nie die Übersicht.</div></a>
+  </div>
+  <div class="tc mt-l"><a href="/blog" class="btn btn-g">Alle Artikel →</a></div>
+</div></section>
+<div class="disc container narrow">Hinweis: Alle Berechnungen sind Schätzungen und ersetzen keine professionelle Steuer-, Rechts- oder Finanzberatung.</div>
+</BaseLayout>

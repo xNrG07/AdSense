@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { POSTS } from '../../data/posts';
+---
+<BaseLayout title="Blog — Finanz-Tipps für Österreich" description="Tipps und Hintergrundwissen rund um Finanzen, Steuern und Budgetplanung in Österreich.">
+<section class="section"><div class="container narrow">
+  <h1>Blog</h1>
+  <p class="mt-s" style="color:var(--text2)">Tipps und Hintergrundwissen rund um Finanzen in Österreich.</p>
+  <div style="display:grid;gap:1rem;margin-top:2rem">
+    {POSTS.map(p=>
+      <a href={`/blog/${p.slug}`} class="card" style="display:block;text-decoration:none">
+        <h3 style="color:var(--text);font-size:1.1rem">{p.title}</h3>
+        <p style="font-size:.9rem;color:var(--text2);margin-top:.25rem;margin-bottom:0">{p.desc}</p>
+      </a>
+    )}
+  </div>
+</div></section>
+</BaseLayout>
