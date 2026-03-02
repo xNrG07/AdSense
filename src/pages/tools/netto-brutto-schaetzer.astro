@@ -3,23 +3,24 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { TOOLS } from '../../data/tools';
 const other=TOOLS.filter(t=>t.slug!=='netto-brutto-schaetzer');
 const jsonLd={'@context':'https://schema.org','@graph':[
-  {'@type':'WebApplication',name:'Netto-Brutto-Schätzer Österreich',url:'https://austrian-tools.at/tools/netto-brutto-schaetzer',applicationCategory:'FinanceApplication',operatingSystem:'All',offers:{'@type':'Offer',price:'0',priceCurrency:'EUR'}},
+  {'@type':'WebApplication',name:'Netto-Brutto-Schätzer Österreich 2026',url:'https://austrian-tools.at/tools/netto-brutto-schaetzer',applicationCategory:'FinanceApplication',operatingSystem:'All',offers:{'@type':'Offer',price:'0',priceCurrency:'EUR'}},
   {'@type':'FAQPage',mainEntity:[
-    {'@type':'Question',name:'Wie berechnet sich das Netto vom Brutto in Österreich?',acceptedAnswer:{'@type':'Answer',text:'Vom Brutto werden Sozialversicherungsbeiträge (~18%) und progressive Lohnsteuer (0–55%) abgezogen. Österreich hat 14 Gehälter/Jahr.'}},
+    {'@type':'Question',name:'Wie berechnet sich das Netto vom Brutto in Österreich 2026?',acceptedAnswer:{'@type':'Answer',text:'Vom Brutto werden SV-Beiträge (18,07% DN-Anteil) und progressive Lohnsteuer (0–55%) abgezogen. Österreich hat 14 Gehälter/Jahr. Ab 2026 gilt eine Steuerfreigrenze von € 13.539/Jahr.'}},
     {'@type':'Question',name:'Ist dieser Rechner offiziell?',acceptedAnswer:{'@type':'Answer',text:'Nein, dies ist ein Schätz-Tool. Für offizielle Berechnungen nutze den BMF-Rechner.'}},
     {'@type':'Question',name:'Warum 14 Gehälter?',acceptedAnswer:{'@type':'Answer',text:'Neben 12 Monatsgehältern gibt es Urlaubsgeld und Weihnachtsgeld, die steuerlich begünstigt mit 6% besteuert werden.'}}
   ]}
 ]};
 ---
-<BaseLayout title="Netto-Brutto-Schätzer Österreich — Gehalt berechnen" description="Berechne kostenlos dein geschätztes Netto-Gehalt mit österreichischen Steuersätzen und Sozialabgaben." jsonLd={jsonLd}>
+<BaseLayout title="Netto-Brutto-Schätzer Österreich 2026 — Gehalt berechnen" description="Berechne kostenlos dein geschätztes Netto-Gehalt 2026 mit aktuellen österreichischen Steuersätzen und Sozialabgaben." jsonLd={jsonLd}>
 <section class="section"><div class="container narrow">
   <nav class="bc"><a href="/">Start</a> / <a href="/tools">Tools</a> / Netto-Brutto-Schätzer</nav>
-  <h1 class="mt-m">💰 Netto-Brutto-Schätzer</h1>
-  <p class="mt-s">Finde heraus, wie viel von deinem Brutto nach Steuern und Sozialabgaben übrig bleibt.</p>
-  <div class="disc">⚠️ Schätz-Tool mit Richtwerten. Für verbindliche Berechnungen nutze den <a href="https://www.bmf.gv.at/services/berechnungsprogramme.html" target="_blank" rel="noopener">BMF-Rechner</a>.</div>
+  <h1 class="mt-m">💰 Netto-Brutto-Schätzer 2026</h1>
+  <p class="mt-s">Finde heraus, wie viel von deinem Brutto nach Steuern und Sozialabgaben übrig bleibt. Aktualisiert mit den Werten für 2026.</p>
+  <div class="disc">⚠️ Schätz-Tool mit Richtwerten für 2026 (Quelle: BMF, WKO, ÖGK). Für verbindliche Berechnungen nutze den <a href="https://www.bmf.gv.at/services/berechnungsprogramme.html" target="_blank" rel="noopener">BMF-Rechner</a>. Keine Steuerberatung.</div>
 
   <div class="card mt-l" id="tool">
     <div class="presets"><span class="presets-l">Beispiele:</span>
+      <button class="btn btn-s btn-sm" data-p="2000">€ 2.000</button>
       <button class="btn btn-s btn-sm" data-p="2500">€ 2.500</button>
       <button class="btn btn-s btn-sm" data-p="3500">€ 3.500</button>
       <button class="btn btn-s btn-sm" data-p="5000">€ 5.000</button>
@@ -34,13 +35,14 @@ const jsonLd={'@context':'https://schema.org','@graph':[
       <div class="rc">
         <div class="rc-t">Geschätztes Netto-Gehalt</div>
         <div class="rc-v" id="rNet">-</div>
-        <div class="hint">pro Monat (14× jährlich)</div>
+        <div class="hint">pro Monat (14× jährlich) — Werte 2026</div>
         <div style="margin-top:1rem">
           <div class="rr"><span class="rr-l">Brutto monatlich</span><span class="rr-v" id="rB">-</span></div>
-          <div class="rr"><span class="rr-l">Sozialversicherung (geschätzt)</span><span class="rr-v" id="rSV">-</span></div>
+          <div class="rr"><span class="rr-l">Sozialversicherung (DN-Anteil)</span><span class="rr-v" id="rSV">-</span></div>
           <div class="rr"><span class="rr-l">Lohnsteuer (geschätzt)</span><span class="rr-v" id="rTx">-</span></div>
           <div class="rr"><span class="rr-l">Brutto jährlich (14×)</span><span class="rr-v" id="rYB">-</span></div>
           <div class="rr"><span class="rr-l">Netto jährlich (geschätzt)</span><span class="rr-v" id="rYN">-</span></div>
+          <div class="rr"><span class="rr-l">SV-Satz (DN)</span><span class="rr-v" id="rSVR">-</span></div>
         </div>
       </div>
       <div class="ra">
@@ -55,10 +57,11 @@ const jsonLd={'@context':'https://schema.org','@graph':[
   <div class="ad" data-ad-slot="incontent_2" style="margin-top:2rem">Anzeige Placeholder</div>
 
   <section class="mt-2xl"><h2>Häufige Fragen</h2><div class="faq">
-    <details><summary>Wie berechnet sich das Netto vom Brutto?</summary><p>Vom Brutto werden Sozialversicherungsbeiträge abgezogen (Pensions-, Kranken-, Arbeitslosenversicherung ≈ 18%). Vom Rest wird progressive Lohnsteuer (0–55%) berechnet.</p></details>
-    <details><summary>Was ist die Höchstbeitragsgrundlage?</summary><p>Sie begrenzt den SV-pflichtigen Betrag (~€ 6.060/Monat 2024). Darüber hinaus fällt keine SV an, aber weiterhin Lohnsteuer.</p></details>
-    <details><summary>Warum 14 Gehälter in Österreich?</summary><p>Neben 12 regulären Gehältern gibt es Urlaubsgeld und Weihnachtsgeld. Diese Sonderzahlungen werden mit nur 6% besteuert.</p></details>
-    <details><summary>Ist dieser Rechner offiziell?</summary><p>Nein – es ist ein Schätz-Tool. Für verbindliche Zahlen empfehlen wir den BMF-Brutto-Netto-Rechner.</p></details>
+    <details><summary>Wie berechnet sich das Netto vom Brutto 2026?</summary><p>Vom Brutto werden zunächst SV-Beiträge abgezogen (Dienstnehmer-Anteil: KV 3,87% + PV 10,25% + ALV bis 3% + WBF 0,5% + AK 0,5%). Vom Rest wird progressive Lohnsteuer berechnet. Ab 2026 ist Einkommen bis € 13.539/Jahr steuerfrei. Der Verkehrsabsetzbetrag (€ 496/Jahr) wird berücksichtigt.</p></details>
+    <details><summary>Was ändert sich 2026?</summary><p>Die Steuerstufen wurden um 1,733% angehoben (Abschaffung kalte Progression). Die Höchstbeitragsgrundlage steigt auf € 6.930/Monat. Die Geringfügigkeitsgrenze bleibt bei € 551,10.</p></details>
+    <details><summary>Was ist die Höchstbeitragsgrundlage?</summary><p>Ab 2026: € 6.930/Monat. Darüber fällt keine SV an, aber weiterhin Lohnsteuer.</p></details>
+    <details><summary>Warum 14 Gehälter in Österreich?</summary><p>Neben 12 regulären Gehältern gibt es Urlaubsgeld und Weihnachtsgeld. Diese Sonderzahlungen werden begünstigt mit nur 6% besteuert.</p></details>
+    <details><summary>Ist dieser Rechner offiziell?</summary><p>Nein – es ist ein Schätz-Tool. Für verbindliche Zahlen: <a href="https://www.bmf.gv.at/services/berechnungsprogramme.html" target="_blank" rel="noopener">BMF-Brutto-Netto-Rechner</a>.</p></details>
   </div></section>
 
   <section class="mt-2xl"><h2>Weitere Tools</h2><div class="rg">{other.map(t=><a href={t.href} class="rl"><div class="rl-e">{t.emoji}</div><div class="rl-t">{t.title}</div><div class="rl-d">{t.desc}</div></a>)}</div></section>
@@ -69,33 +72,131 @@ const jsonLd={'@context':'https://schema.org','@graph':[
 </div></section>
 </BaseLayout>
 <script is:inline>
-const f=v=>new Intl.NumberFormat('de-AT',{style:'currency',currency:'EUR'}).format(v);
-const B=[{f:0,t:12816,r:0},{f:12816,t:20818,r:.20},{f:20818,t:34513,r:.30},{f:34513,t:66612,r:.40},{f:66612,t:99266,r:.48},{f:99266,t:1e6,r:.50},{f:1e6,t:Infinity,r:.55}];
-function tax(inc){let t=0;for(const b of B){if(inc<=b.f)break;t+=(Math.min(inc,b.t)-b.f)*b.r}return t}
-function calc(br){
-  const sv=Math.min(br,6060)*.1763,aB=br*14,aSV=sv*14,aT=aB-aSV;
-  const rT=(aT/14)*12,rTax=tax(rT),sT=(aT/14)*2,sTax=Math.max(0,(sT-620)*.06);
-  const tTax=rTax+sTax,aN=aB-aSV-tTax;
-  return{br,sv,tx:tTax/14,net:aN/14,aB,aN}
+/**
+ * Netto-Brutto Calculator — 2026 values
+ * Sources: BMF Steuertarif 2026, WKO Beitragswesen DN 2026, ÖGK
+ */
+const fmt = v => new Intl.NumberFormat('de-AT',{style:'currency',currency:'EUR'}).format(v);
+
+// 2026 tax brackets (annual)
+const BRACKETS = [
+  {f:0,     t:13539,   r:0},
+  {f:13539, t:21992,   r:0.20},
+  {f:21992, t:36458,   r:0.30},
+  {f:36458, t:70365,   r:0.40},
+  {f:70365, t:104859,  r:0.48},
+  {f:104859,t:1000000, r:0.50},
+  {f:1000000,t:Infinity,r:0.55},
+];
+
+// SV rates 2026 — DN share (WKO)
+// KV 3.87% + PV 10.25% + WBF 0.50% + AK 0.50% = 15.12% base
+// ALV depends on income: <=2225: 0%, 2225-2427: 1%, 2427-2630: 2%, >2630: 3%
+const SV_BASE = 0.1512; // without ALV
+const MAX_SV_BASIS = 6930;
+const VERKEHRS_AB = 496; // annual
+
+function getALVRate(monthlyBrutto) {
+  if (monthlyBrutto <= 2225) return 0;
+  if (monthlyBrutto <= 2427) return 0.01;
+  if (monthlyBrutto <= 2630) return 0.02;
+  return 0.03;
 }
-function run(){
-  const v=parseFloat(document.getElementById('brutto').value),e=document.getElementById('bErr');
-  if(isNaN(v)||v<0||v>100000){e.textContent='Gültiges Gehalt eingeben (0–100.000).';e.style.display='block';document.getElementById('res').style.display='none';return}
-  e.style.display='none';const r=calc(v);
-  document.getElementById('rNet').textContent=f(r.net);
-  document.getElementById('rB').textContent=f(r.br);
-  document.getElementById('rSV').textContent='− '+f(r.sv);
-  document.getElementById('rTx').textContent='− '+f(r.tx);
-  document.getElementById('rYB').textContent=f(r.aB);
-  document.getElementById('rYN').textContent=f(r.aN);
-  document.getElementById('res').style.display='block';
+
+function calcTax(annualIncome) {
+  let tax = 0;
+  for (const b of BRACKETS) {
+    if (annualIncome <= b.f) break;
+    tax += (Math.min(annualIncome, b.t) - b.f) * b.r;
+  }
+  return tax;
 }
-document.getElementById('calc').addEventListener('click',run);
-document.getElementById('brutto').addEventListener('keydown',e=>{if(e.key==='Enter')run()});
-document.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('brutto').value=b.dataset.p;run()}));
-function flash(t){const m=document.getElementById('msg');m.textContent=t;m.style.display='block';setTimeout(()=>m.style.display='none',2000)}
-document.getElementById('copy')?.addEventListener('click',async()=>{const t=`Netto-Brutto (AT): Brutto € ${document.getElementById('brutto').value} → Netto ${document.getElementById('rNet').textContent}\naustrian-tools.at`;await navigator.clipboard.writeText(t);flash('✓ Kopiert!')});
-document.getElementById('share')?.addEventListener('click',()=>{const u=new URL(location.href);u.search='';u.searchParams.set('brutto',document.getElementById('brutto').value);navigator.clipboard.writeText(u.toString());flash('✓ Link kopiert!')});
-document.getElementById('save')?.addEventListener('click',()=>{try{const k='at_nb',x=JSON.parse(localStorage.getItem(k)||'[]');x.unshift({b:document.getElementById('brutto').value,n:document.getElementById('rNet').textContent,t:new Date().toISOString()});localStorage.setItem(k,JSON.stringify(x.slice(0,10)));flash('✓ Gespeichert!')}catch{}});
-const ps=new URLSearchParams(location.search);if(ps.get('brutto')){document.getElementById('brutto').value=ps.get('brutto');run()}
+
+function calculate(brutto) {
+  // SV: capped at Höchstbeitragsgrundlage
+  const svBasis = Math.min(brutto, MAX_SV_BASIS);
+  const alvRate = getALVRate(brutto);
+  const svRate = SV_BASE + alvRate;
+  const svMonthly = svBasis * svRate;
+
+  // Annual
+  const annualBrutto = brutto * 14;
+
+  // Annual SV (regular months and Sonderzahlungen both capped)
+  const annualSV = svMonthly * 14;
+
+  // Taxable income = brutto - SV
+  const annualTaxable = annualBrutto - annualSV;
+
+  // Tax on 12 regular months
+  const regularTaxable = (annualTaxable / 14) * 12;
+  const regularTax = calcTax(regularTaxable);
+
+  // Apply Verkehrsabsetzbetrag (reduces tax directly)
+  const regularTaxAfterVAB = Math.max(0, regularTax - VERKEHRS_AB);
+
+  // Sonderzahlungen (13th + 14th): flat 6% tax (first €620 exempt per SZ)
+  const szTaxable = (annualTaxable / 14) * 2;
+  const szTax = Math.max(0, (szTaxable - 620) * 0.06);
+
+  const totalTax = regularTaxAfterVAB + szTax;
+
+  const annualNetto = annualBrutto - annualSV - totalTax;
+  const monthlyNetto = annualNetto / 14;
+
+  return { brutto, svMonthly, svRate, taxMonthly: totalTax/14, nettoMonthly: monthlyNetto, annualBrutto, annualNetto };
+}
+
+function run() {
+  const v = parseFloat(document.getElementById('brutto').value);
+  const e = document.getElementById('bErr');
+  if (isNaN(v) || v < 0 || v > 100000) {
+    e.textContent = 'Gültiges Gehalt eingeben (0–100.000).';
+    e.style.display = 'block';
+    document.getElementById('res').style.display = 'none';
+    return;
+  }
+  e.style.display = 'none';
+  const r = calculate(v);
+  document.getElementById('rNet').textContent = fmt(r.nettoMonthly);
+  document.getElementById('rB').textContent = fmt(r.brutto);
+  document.getElementById('rSV').textContent = '− ' + fmt(r.svMonthly);
+  document.getElementById('rTx').textContent = '− ' + fmt(r.taxMonthly);
+  document.getElementById('rYB').textContent = fmt(r.annualBrutto);
+  document.getElementById('rYN').textContent = fmt(r.annualNetto);
+  document.getElementById('rSVR').textContent = (r.svRate * 100).toFixed(2) + '%';
+  document.getElementById('res').style.display = 'block';
+}
+
+document.getElementById('calc').addEventListener('click', run);
+document.getElementById('brutto').addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
+document.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => {
+  document.getElementById('brutto').value = b.dataset.p; run();
+}));
+
+function flash(t) {
+  const m = document.getElementById('msg');
+  m.textContent = t; m.style.display = 'block';
+  setTimeout(() => m.style.display = 'none', 2000);
+}
+document.getElementById('copy')?.addEventListener('click', async () => {
+  const t = 'Netto-Brutto 2026 (AT): Brutto € ' + document.getElementById('brutto').value + ' → Netto ' + document.getElementById('rNet').textContent + '\naustrian-tools.at';
+  await navigator.clipboard.writeText(t); flash('✓ Kopiert!');
+});
+document.getElementById('share')?.addEventListener('click', () => {
+  const u = new URL(location.href); u.search = '';
+  u.searchParams.set('brutto', document.getElementById('brutto').value);
+  navigator.clipboard.writeText(u.toString()); flash('✓ Link kopiert!');
+});
+document.getElementById('save')?.addEventListener('click', () => {
+  try {
+    const k = 'at_nb', x = JSON.parse(localStorage.getItem(k) || '[]');
+    x.unshift({b: document.getElementById('brutto').value, n: document.getElementById('rNet').textContent, t: new Date().toISOString()});
+    localStorage.setItem(k, JSON.stringify(x.slice(0, 10))); flash('✓ Gespeichert!');
+  } catch {}
+});
+
+// URL params
+const ps = new URLSearchParams(location.search);
+if (ps.get('brutto')) { document.getElementById('brutto').value = ps.get('brutto'); run(); }
 </script>
